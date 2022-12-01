@@ -32,11 +32,11 @@ func main() {
 		total += int(amount)
 	}
 
-	sort.Ints(totals)
-	fmt.Println("Part 1:", totals[len(totals)-1])
+	sort.Sort(sort.Reverse(sort.IntSlice(totals)))
+	fmt.Println("Part 1:", totals[0])
 
 	top3 := 0
-	for _, n := range totals[len(totals)-3:] {
+	for _, n := range totals[:3] {
 		top3 += n
 	}
 	fmt.Println("Part 2:", top3)
