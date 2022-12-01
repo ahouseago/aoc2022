@@ -28,16 +28,8 @@ func main() {
 			total = 0
 			continue
 		}
-
-		amount, err := strconv.ParseInt(line, 10, 0)
-		if err != nil {
-			panic("Not a valid int: " + line)
-		}
+		amount, _ := strconv.Atoi(line)
 		total += int(amount)
-	}
-	// Make sure we include the final line
-	if total != 0 {
-		totals = append(totals, total)
 	}
 
 	sort.Ints(totals)
