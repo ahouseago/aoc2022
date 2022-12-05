@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 //go:embed input.txt
@@ -24,7 +25,7 @@ func main() {
 		first, second := set(line[:len(line)/2]), set(line[len(line)/2:])
 		for l := range first {
 			if second[l] {
-				total += int(value([]rune(l)[0]))
+				total += value([]rune(l)[0])
 				break
 			}
 		}
@@ -40,7 +41,7 @@ func main() {
 		}
 		for l, item := range items {
 			if item == 3 {
-				total2 += int(value([]rune(l)[0]))
+				total2 += value([]rune(l)[0])
 			}
 		}
 	}
@@ -57,9 +58,9 @@ func set(input string) map[string]bool {
 	return out
 }
 
-func value(r rune) rune {
-	if strings.ToLower(string(r)) == string(r) {
-		return r - 96
+func value(r rune) int {
+	if unicode.IsLower(r) {
+		return int(r - 96)
 	}
-	return r - 38
+	return int(r - 38)
 }
