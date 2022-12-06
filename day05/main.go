@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -23,7 +22,7 @@ func main() {
 	state := strings.Split(inputParts[0], "\n")
 	numStacks := (len(state[len(state)-1])-3)/4 + 1
 
-	stacks1, stacks2 := make([]stack, numStacks), make([]stack, numStacks)
+	stacks1, stacks2 := make([][]rune, numStacks), make([][]rune, numStacks)
 	for _, line := range state[:len(state)-1] {
 		for i := 1; i < len(line); i += 4 {
 			if line[i] != ' ' {
@@ -34,24 +33,22 @@ func main() {
 	}
 
 	for _, instruction := range strings.Split(strings.TrimSpace(inputParts[1]), "\n") {
-		var x, num, from, to string
-		fmt.Sscan(instruction, &x, &num, &x, &from, &x, &to)
-		n, _ := strconv.Atoi(num)
-		f, _ := strconv.Atoi(from)
-		t, _ := strconv.Atoi(to)
+		var n, from, to int
+		fmt.Sscanf(instruction, "move %d from %d to %d\n", &n, &from, &to)
+		from, to = from-1, to-1
 
 		// 9000
 		for i := 0; i < n; i++ {
-			head, tail := stacks1[f-1][0], stacks1[f-1][1:]
-			stacks1[t-1] = append(stack{head}, stacks1[t-1]...)
-			stacks1[f-1] = tail
+			head, tail := stacks1[from][0], stacks1[from][1:]
+			stacks1[to] = append([]rune{head}, stacks1[to]...)
+			stacks1[from] = tail
 		}
 
 		// 9001
-		head := make(stack, n)
-		copy(head, stacks2[f-1][:n])
-		stacks2[t-1] = append(head, stacks2[t-1]...)
-		stacks2[f-1] = stacks2[f-1][n:]
+		head := make([]rune, n)
+		copy(head, stacks2[from][:n])
+		stacks2[to] = append(head, stacks2[to]...)
+		stacks2[from] = stacks2[from][n:]
 	}
 
 	part1 := ""
@@ -65,18 +62,4 @@ func main() {
 
 	fmt.Println("Part 1:", part1)
 	fmt.Println("Part 2:", part2)
-}
-
-type stack []rune
-
-func (s stack) pop() (rune, stack) {
-	return s[0], s[1:]
-}
-
-func (s stack) format() string {
-	out := ""
-	for _, r := range s {
-		out += string(r)
-	}
-	return out
 }
