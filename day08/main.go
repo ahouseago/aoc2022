@@ -20,6 +20,7 @@ func main() {
 
 	width := strings.Index(input, "\n")
 	fmt.Println("Part 1:", len(countTrees(strings.ReplaceAll(input, "\n", ""), width)))
+	fmt.Println("Part 2:", partTwo(strings.ReplaceAll(input, "\n", ""), width))
 }
 
 func countTrees(input string, w int) map[int]bool {
@@ -65,4 +66,48 @@ func reverse(s string) string {
 		runes[i], runes[j] = runes[j], runes[i]
 	}
 	return string(runes)
+}
+
+func partTwo(input string, w int) int {
+	var maxDistance int
+	for i := 0; i < len(input); i++ {
+		if i < w || i > len(input)-w || i%w == 0 || (i+1)%w == 0 {
+			// Skip the outside ones
+			continue
+		}
+		seeUp, seeDown, seeLeft, seeRight := 0, 0, 0, 0
+		// Search up
+		for j := i - w; j > 0; j -= w {
+			seeUp++
+			if input[i] <= input[j] {
+				break
+			}
+		}
+		// Search down
+		for j := i + w; j < len(input); j += w {
+			seeDown++
+			if input[i] <= input[j] {
+				break
+			}
+		}
+		// Search left
+		for j := i - 1; (j+1)%w != 0; j-- {
+			seeLeft++
+			if input[i] <= input[j] {
+				break
+			}
+		}
+		// Search right
+		for j := i + 1; j%w != 0; j++ {
+			seeRight++
+			if input[i] <= input[j] {
+				break
+			}
+		}
+		canSee := seeUp * seeDown * seeLeft * seeRight
+		if canSee > maxDistance {
+			maxDistance = canSee
+		}
+	}
+	return maxDistance
 }
